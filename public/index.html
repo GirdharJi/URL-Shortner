@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortner</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">URL Shortner</h1>
+    <br>
+    <form style="text-align: center;">
+        <input style="width: 200px;" type="url" required name="url" id="url" placeholder="Enter URL to shorten">
+        <button type="submit" id="submit">Shorten!</button>
+    </form>
+    <br>
+    <div style="text-align: center;" id="result"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const submit = document.querySelector("#submit");
+
+            submit.addEventListener("click", async (e) => {
+
+                e.preventDefault();
+
+                const url = { longUrl: document.querySelector("#url").value };
+
+                let request = await fetch("/urlapi", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(url)
+                })
+
+                if(!request.status){
+                    throw console.error();
+                }
+
+                const data = await request.json();
+
+                const shortUrl = data.result;
+
+                document.querySelector("#result").innerHTML = `<a href="${shortUrl}">${shortUrl}</a>`
+            })
+        })
+    </script>
+</body>
+
+</html>
